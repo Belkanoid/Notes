@@ -1,10 +1,7 @@
 package com.belkanoid.notes.model.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.belkanoid.notes.model.noteModel.Note
 import java.util.*
 
@@ -23,4 +20,7 @@ interface NoteDao {
 
     @Update
     fun updateNote(note : Note)
+
+    @Delete
+    fun deleteNote(note: Note)
 }

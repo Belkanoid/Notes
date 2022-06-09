@@ -1,13 +1,12 @@
 package com.belkanoid.notes.view.noteView
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -15,18 +14,30 @@ import androidx.lifecycle.ViewModelProvider
 import com.belkanoid.notes.R
 import com.belkanoid.notes.model.noteModel.Note
 import com.belkanoid.notes.utils.Constants
+import com.belkanoid.notes.view.noteListView.NoteListFragment
 import com.belkanoid.notes.view.noteListView.NoteListViewModel
 import java.util.*
 
 
 class NoteFragment : Fragment(), INoteView{
 
+    interface Callbacks {
+        fun onNoteDeleted(fragment: NoteFragment)
+    }
+
+    private var callbacks: Callbacks? = null
     private lateinit var note : Note
     private val noteViewModel : NoteViewModel by lazy {
         ViewModelProvider(this).get(NoteViewModel::class.java)
     }
 
     private lateinit var contentText : TextView
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callbacks
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,10 +50,10 @@ class NoteFragment : Fragment(), INoteView{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        noteViewModel.noteLiveData.observe(viewLifecycleOwner, Observer { _note ->
-            _note?.let {
-                this.note = _note
-                contentText.text = note.content
+        noteViewModel.noteLiveData.observe(viewLifecycleOwner, Observer { note ->
+            note?.let {
+                this.note = note
+                contentText.text = this.note.content
             }
         })
     }
@@ -52,11 +63,30 @@ class NoteFragment : Fragment(), INoteView{
         note = Note()
         val noteId = arguments?.getSerializable(Constants.ARG_NOTE_ID) as UUID
         noteViewModel.loadNote(noteId)
+        setHasOptionsMenu(true)
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_note, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.delete_note -> {
+                onDeleteNote(note)
+                callbacks?.onNoteDeleted(this)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 
     }
 
     override fun onStart() {
         super.onStart()
+
         val titleWatcher = object : TextWatcher {
             override fun beforeTextChanged(
                 sequence: CharSequence?,
@@ -74,12 +104,14 @@ class NoteFragment : Fragment(), INoteView{
             }
             override fun afterTextChanged(sequence: Editable?) {}
         }
+
         contentText.addTextChangedListener(titleWatcher)
+
     }
 
     override fun onStop() {
         super.onStop()
-        noteViewModel.saveNote(note)
+        onSaveNote(note)
     }
 
 
@@ -95,15 +127,12 @@ class NoteFragment : Fragment(), INoteView{
         }
     }
 
-    override fun onUpdateNote(note: Note) {
-        TODO("Not yet implemented")
-    }
 
     override fun onSaveNote(note: Note) {
-        TODO("Not yet implemented")
+        noteViewModel.saveNote(note)
     }
 
     override fun onDeleteNote(note: Note) {
-        TODO("Not yet implemented")
+        noteViewModel.deleteNote(note)
     }
 }

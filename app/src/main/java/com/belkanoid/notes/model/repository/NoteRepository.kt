@@ -37,6 +37,12 @@ class NoteRepository private constructor(context: Context){
         }
     }
 
+    fun deleteNote(note: Note) {
+        executor.execute{
+            noteDao.deleteNote(note)
+        }
+    }
+
     companion object {
         private var INSTANCE : NoteRepository? = null
         fun initialize(context : Context) {

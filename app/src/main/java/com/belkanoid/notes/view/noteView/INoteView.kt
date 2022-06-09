@@ -6,6 +6,4 @@ import com.belkanoid.notes.view.INoteBaseView
 
 interface INoteView : INoteBaseView {
 
-    fun onUpdateNote(note : Note)
-
 }

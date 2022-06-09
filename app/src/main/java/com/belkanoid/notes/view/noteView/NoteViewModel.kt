@@ -24,4 +24,8 @@ class NoteViewModel : ViewModel() {
     fun saveNote(note : Note) {
         noteRepository.updateNote(note)
     }
+
+    fun deleteNote(note : Note) {
+        noteRepository.deleteNote(note)
+    }
 }

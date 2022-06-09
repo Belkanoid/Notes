@@ -12,12 +12,5 @@ class NoteListViewModel : ViewModel() {
         noteRepository.addNote(note)
     }
 
-//    val noteListLiveData = mutableListOf<Note>()
-//    init {
-//        for (i in 0 until 10) {
-//            val note = Note(content = "$i")
-//            noteListLiveData.add(note)
-//        }
-//    }
 
 }
