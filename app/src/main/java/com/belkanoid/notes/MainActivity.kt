@@ -2,16 +2,29 @@ package com.belkanoid.notes
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.annotation.ColorInt
+import androidx.fragment.app.Fragment
+import com.belkanoid.notes.model.noteModel.Note
+import com.belkanoid.notes.model.repository.NoteRepository
+import com.belkanoid.notes.utils.NoteApplication
 import com.belkanoid.notes.view.noteListView.NoteListFragment
 import com.belkanoid.notes.view.noteView.NoteFragment
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener
 import java.util.*
 
-class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks, NoteFragment.Callbacks {
+class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks, NoteFragment.Callbacks,
+    ColorPickerDialogListener {
+
+    private val noteApplication = NoteApplication()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
         onCreateNoteList(savedInstanceState)
 
     }
@@ -24,7 +37,6 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks, NoteFragme
             .addToBackStack(null)
             .commit()
     }
-
     private fun onCreateNoteList(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             val noteListFragment = NoteListFragment.newInstance()
@@ -32,15 +44,27 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks, NoteFragme
                 .beginTransaction()
                 .replace(R.id.fragment_container, noteListFragment)
                 .commit()
-
         }
     }
 
-    override fun onNoteDeleted(fragment: NoteFragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .remove(fragment)
-            .commit()
-        onCreateNoteList(null)
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        onCreateNoteList(outState)
     }
+
+    override fun onNoteDeleted() {
+        supportFragmentManager.popBackStack()
+    }
+
+    override fun onColorSelected(dialogId: Int, @ColorInt color: Int) {
+        val fragment : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (fragment is ColorPickerDialogListener) {
+            (fragment as ColorPickerDialogListener?)!!.onColorSelected(dialogId, color)
+        }
+    }
+
+    override fun onDialogDismissed(dialogId: Int) {
+
+    }
+
 }

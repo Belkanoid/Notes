@@ -9,4 +9,10 @@
         app:showAsAction="ifRoom|withText"
         />
 
+    <item
+        android:id="@+id/color_note"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/color_note"
+        app:showAsAction="ifRoom|withText" />
+
 </menu>

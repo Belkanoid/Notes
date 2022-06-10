@@ -11,6 +11,7 @@ import java.util.concurrent.Executors
 
 class NoteRepository private constructor(context: Context){
 
+
     private val database : NoteDatabase =
         Room.databaseBuilder(
             context.applicationContext,

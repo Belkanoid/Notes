@@ -5,4 +5,5 @@
     <string name="hint_note">Write your note here…</string>
     <string name="new_note">new Note</string>
     <string name="delete_note">Delete</string>
+    <string name="color_note">Color</string>
 </resources>

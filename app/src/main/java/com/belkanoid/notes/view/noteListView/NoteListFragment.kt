@@ -98,7 +98,10 @@ class NoteListFragment : Fragment(), INoteListView {
 
         fun bind(_note: Note) {
             this.note = _note
-            contentText.text = _note.content
+            val contentLength = note.content.length
+            contentText.text = note.content
+            contentText.setBackgroundColor(note.color)
+
             dateText.text = DateFormat.format(Constants.DATE_FORMAT, _note.date).toString()
         }
 

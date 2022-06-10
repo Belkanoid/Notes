@@ -9,5 +9,6 @@ data class Note(
     @PrimaryKey
     val id : UUID = UUID.randomUUID(),
     var content : String = "",
-    val date : Date = Date()
+    var color : Int = -8061,
+    var date : Date = Date()
 )
